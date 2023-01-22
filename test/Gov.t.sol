@@ -286,7 +286,7 @@ contract GovTest is NounsBuilderTest, GovernorTypesV1 {
     function test_VerifySubmittedProposalHash() public {
         deployMock();
 
-        // Mint a token to voter 1 to have quorum       
+        // Mint a token to voter 1 to have quorum
         mintVoter1();
 
         (address[] memory targets, uint256[] memory values, bytes[] memory calldatas) = mockProposal();
@@ -416,7 +416,7 @@ contract GovTest is NounsBuilderTest, GovernorTypesV1 {
     function test_CastVote() public {
         deployMock();
 
-        // This mints a token to voter1           
+        // This mints a token to voter1
         bytes32 proposalId = createProposal();
 
         uint256 votingDelay = governor.votingDelay();
@@ -455,7 +455,7 @@ contract GovTest is NounsBuilderTest, GovernorTypesV1 {
     function test_CastVoteWithSig() public {
         deployMock();
 
-        // This mints a token to voter1           
+        // This mints a token to voter1
         bytes32 proposalId = createProposal();
 
         uint256 votingDelay = governor.votingDelay();

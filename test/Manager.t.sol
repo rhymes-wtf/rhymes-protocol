@@ -84,8 +84,6 @@ contract ManagerTest is NounsBuilderTest {
         assertEq(auction.minBidIncrement(), 10);
     }
 
-
-
     function test_TreasuryInitialized() public {
         deployMock();
 

@@ -4,11 +4,12 @@ pragma solidity 0.8.16;
 import { NounsBuilderTest } from "./utils/NounsBuilderTest.sol";
 import { MetadataRendererTypesV1 } from "../src/token/metadata/types/MetadataRendererTypesV1.sol";
 import { MetadataRendererTypesV2 } from "../src/token/metadata/types/MetadataRendererTypesV2.sol";
+import { MetadataRendererTypesV3 } from "../src/token/metadata/types/MetadataRendererTypesV3.sol";
 
 import { Base64URIDecoder } from "./utils/Base64URIDecoder.sol";
 import "forge-std/console2.sol";
 
-contract MetadataRendererTest is NounsBuilderTest, MetadataRendererTypesV1 {
+contract MetadataRendererTest is NounsBuilderTest, MetadataRendererTypesV1, MetadataRendererTypesV3 {
     function setUp() public virtual override {
         super.setUp();
 
@@ -203,7 +204,7 @@ contract MetadataRendererTest is NounsBuilderTest, MetadataRendererTypesV1 {
             {
                 "name": "Mock Token #0",
                 "description": "This is a mock token",
-                "image": "http://localhost:5000/render?contractAddress=0xb5795e66c5af21ad8e42e91a375f8c10e2f64cfa&tokenId=0&images=https%3a%2f%2fnouns.build%2fapi%2ftest%2fmock-property%2fmock-item.json",
+                "image": "http://localhost:5000/render?contractAddress=0xcfa47f35f4974a4c44747e7900aa52f74f0ff5c0&tokenId=0&images=https%3a%2f%2fnouns.build%2fapi%2ftest%2fmock-property%2fmock-item.json",
                 "properties": {
                     "mock-property": "mock-item"
                 },
@@ -217,7 +218,7 @@ contract MetadataRendererTest is NounsBuilderTest, MetadataRendererTypesV1 {
 
         assertEq(
             json,
-            '{"name": "Mock Token #0","description": "This is a mock token","image": "http://localhost:5000/render?contractAddress=0xb5795e66c5af21ad8e42e91a375f8c10e2f64cfa&tokenId=0&images=https%3a%2f%2fnouns.build%2fapi%2ftest%2fmock-property%2fmock-item.json","properties": {"mock-property": "mock-item"},"testing": "HELLO","participationAgreement": "This is a JSON quoted participation agreement."}'
+            '{"name": "Mock Token #0","description": "This is a mock token","image": "http://localhost:5000/render?contractAddress=0xcfa47f35f4974a4c44747e7900aa52f74f0ff5c0&tokenId=0&images=https%3a%2f%2fnouns.build%2fapi%2ftest%2fmock-property%2fmock-item.json","properties": {"mock-property": "mock-item"},"testing": "HELLO","participationAgreement": "This is a JSON quoted participation agreement."}'
         );
     }
 
@@ -259,7 +260,7 @@ contract MetadataRendererTest is NounsBuilderTest, MetadataRendererTypesV1 {
         // Ensure no additional properties are sent
         assertEq(
             json,
-            '{"name": "Mock Token #0","description": "This is a mock token","image": "http://localhost:5000/render?contractAddress=0xb5795e66c5af21ad8e42e91a375f8c10e2f64cfa&tokenId=0&images=https%3a%2f%2fnouns.build%2fapi%2ftest%2fmock-property%2fmock-item.json","properties": {"mock-property": "mock-item"}}'
+            '{"name": "Mock Token #0","description": "This is a mock token","image": "http://localhost:5000/render?contractAddress=0xcfa47f35f4974a4c44747e7900aa52f74f0ff5c0&tokenId=0&images=https%3a%2f%2fnouns.build%2fapi%2ftest%2fmock-property%2fmock-item.json","properties": {"mock-property": "mock-item"}}'
         );
 
         assertTrue(keccak256(bytes(withAdditionalTokenProperties)) != keccak256(bytes(token.tokenURI(0))));
@@ -315,7 +316,7 @@ contract MetadataRendererTest is NounsBuilderTest, MetadataRendererTypesV1 {
 
         assertEq(
             json,
-            unicode'{"name": "Mock Token #0","description": "This is a mock token","image": "http://localhost:5000/render?contractAddress=0xb5795e66c5af21ad8e42e91a375f8c10e2f64cfa&tokenId=0&images=https%3a%2f%2fnouns.build%2fapi%2ftest%2fmock-%e2%8c%90%20%e2%97%a8-%e2%97%a8-.%e2%88%86property%2f%20%e2%8c%90%e2%97%a8-%e2%97%a8%20.json","properties": {"mock-⌐ ◨-◨-.∆property": " ⌐◨-◨ "}}'
+            unicode'{"name": "Mock Token #0","description": "This is a mock token","image": "http://localhost:5000/render?contractAddress=0xcfa47f35f4974a4c44747e7900aa52f74f0ff5c0&tokenId=0&images=https%3a%2f%2fnouns.build%2fapi%2ftest%2fmock-%e2%8c%90%20%e2%97%a8-%e2%97%a8-.%e2%88%86property%2f%20%e2%8c%90%e2%97%a8-%e2%97%a8%20.json","properties": {"mock-⌐ ◨-◨-.∆property": " ⌐◨-◨ "}}'
         );
 
         assertTrue(keccak256(bytes(withAdditionalTokenProperties)) != keccak256(bytes(token.tokenURI(0))));
@@ -354,7 +355,162 @@ contract MetadataRendererTest is NounsBuilderTest, MetadataRendererTypesV1 {
 
         assertEq(
             json,
-            '{"name": "Mock Token #0","description": "This is a mock token","image": "http://localhost:5000/render?contractAddress=0xb5795e66c5af21ad8e42e91a375f8c10e2f64cfa&tokenId=0&images=https%3a%2f%2fnouns.build%2fapi%2ftest%2fmock-property%2fmock-item.json","properties": {"mock-property": "mock-item"}}'
+            '{"name": "Mock Token #0","description": "This is a mock token","image": "http://localhost:5000/render?contractAddress=0xcfa47f35f4974a4c44747e7900aa52f74f0ff5c0&tokenId=0&images=https%3a%2f%2fnouns.build%2fapi%2ftest%2fmock-property%2fmock-item.json","properties": {"mock-property": "mock-item"}}'
+        );
+    }
+
+    function test_AddCustomToken() public {
+        string[] memory names = new string[](1);
+        names[0] = "mock-property";
+
+        ItemParam[] memory items = new ItemParam[](1);
+        items[0].propertyId = 0;
+        items[0].name = "mock-item";
+        items[0].isNewProperty = true;
+
+        IPFSGroup memory ipfsGroup = IPFSGroup({ baseUri: "https://nouns.build/api/test/", extension: ".json" });
+
+        vm.prank(founder);
+        metadataRenderer.addProperties(names, items, ipfsGroup);
+
+        vm.prank(address(auction));
+        token.mint();
+
+        vm.prank(address(governor));
+
+        CustomToken memory mockToken = CustomToken(
+            "string image",
+            "string animation_url",
+            "string external_url",
+            "string description",
+            "string name",
+            "string attributes",
+            "string properties",
+            block.timestamp
+        );
+        metadataRenderer.addToReleaseStack(mockToken);
+
+        (
+            string memory image,
+            string memory animation_url,
+            string memory external_url,
+            string memory description,
+            string memory name,
+            string memory attributes,
+            string memory properties,
+            uint256 timestamp
+        ) = metadataRenderer.releaseStack(0);
+
+        assertEq(image, "string image");
+        assertEq(animation_url, "string animation_url");
+        assertEq(external_url, "string external_url");
+        assertEq(description, "string description");
+        assertEq(name, "string name");
+        assertEq(attributes, "string attributes");
+        assertEq(properties, "string properties");
+        assertEq(timestamp, block.timestamp);
+
+        vm.prank(address(auction));
+        skip(3600);
+        uint256 tokenId = token.mint();
+
+        string memory json = Base64URIDecoder.decodeURI("data:application/json;base64,", token.tokenURI(tokenId));
+
+        assertEq(
+            json,
+            '{"name": "string name","description": "string description","image": "string image","properties": string properties,"attributes": string attributes,"animation_url": string attributes,"external_url": "string external_url"}'
+        );
+
+        vm.prank(address(auction));
+        tokenId = token.mint();
+
+        json = Base64URIDecoder.decodeURI("data:application/json;base64,", token.tokenURI(tokenId));
+
+        assertEq(
+            json,
+            '{"name": "Mock Token #4","description": "This is a mock token","image": "http://localhost:5000/render?contractAddress=0xcfa47f35f4974a4c44747e7900aa52f74f0ff5c0&tokenId=4&images=https%3a%2f%2fnouns.build%2fapi%2ftest%2fmock-property%2fmock-item.json","properties": {"mock-property": "mock-item"}}'
+        );
+    }
+
+    function test_AddCustomTokenWithLaterRelease() public {
+        string[] memory names = new string[](1);
+        names[0] = "mock-property";
+
+        ItemParam[] memory items = new ItemParam[](1);
+        items[0].propertyId = 0;
+        items[0].name = "mock-item";
+        items[0].isNewProperty = true;
+
+        IPFSGroup memory ipfsGroup = IPFSGroup({ baseUri: "https://nouns.build/api/test/", extension: ".json" });
+
+        vm.prank(founder);
+        metadataRenderer.addProperties(names, items, ipfsGroup);
+
+        vm.prank(address(auction));
+        token.mint();
+
+        vm.prank(address(governor));
+        CustomToken memory mockToken = CustomToken(
+            "string image",
+            "string animation_url",
+            "string external_url",
+            "string description",
+            "string name",
+            "string attributes",
+            "string properties",
+            7200
+        );
+        metadataRenderer.addToReleaseStack(mockToken);
+
+        (
+            string memory image,
+            string memory animation_url,
+            string memory external_url,
+            string memory description,
+            string memory name,
+            string memory attributes,
+            string memory properties,
+            uint256 timestamp
+        ) = metadataRenderer.releaseStack(0);
+
+        assertEq(image, "string image");
+        assertEq(animation_url, "string animation_url");
+        assertEq(external_url, "string external_url");
+        assertEq(description, "string description");
+        assertEq(name, "string name");
+        assertEq(attributes, "string attributes");
+        assertEq(properties, "string properties");
+        assertEq(timestamp, 7200);
+
+        vm.prank(address(auction));
+        uint256 tokenId = token.mint();
+
+        string memory json = Base64URIDecoder.decodeURI("data:application/json;base64,", token.tokenURI(tokenId));
+
+        assertEq(
+            json,
+            '{"name": "Mock Token #3","description": "This is a mock token","image": "http://localhost:5000/render?contractAddress=0xcfa47f35f4974a4c44747e7900aa52f74f0ff5c0&tokenId=3&images=https%3a%2f%2fnouns.build%2fapi%2ftest%2fmock-property%2fmock-item.json","properties": {"mock-property": "mock-item"}}'
+        );
+        skip(3600);
+        vm.prank(address(auction));
+        tokenId = token.mint();
+
+        json = Base64URIDecoder.decodeURI("data:application/json;base64,", token.tokenURI(tokenId));
+
+        assertEq(
+            json,
+            '{"name": "Mock Token #4","description": "This is a mock token","image": "http://localhost:5000/render?contractAddress=0xcfa47f35f4974a4c44747e7900aa52f74f0ff5c0&tokenId=4&images=https%3a%2f%2fnouns.build%2fapi%2ftest%2fmock-property%2fmock-item.json","properties": {"mock-property": "mock-item"}}'
+        );
+
+        skip(3600);
+        vm.prank(address(auction));
+        tokenId = token.mint();
+
+        json = Base64URIDecoder.decodeURI("data:application/json;base64,", token.tokenURI(tokenId));
+
+        assertEq(
+            json,
+            '{"name": "string name","description": "string description","image": "string image","properties": string properties,"attributes": string attributes,"animation_url": string attributes,"external_url": "string external_url"}'
         );
     }
 }

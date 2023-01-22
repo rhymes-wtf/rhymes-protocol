@@ -18,7 +18,7 @@ import { IVersionedContract } from "../lib/interfaces/IVersionedContract.sol";
 
 /// @title Manager
 /// @author Rohan Kulkarni
-/// @custom:repo github.com/ourzora/nouns-protocol 
+/// @custom:repo github.com/ourzora/nouns-protocol
 /// @notice The DAO deployer and upgrade manager
 contract Manager is IManager, VersionedContract, UUPS, Ownable, ManagerStorageV1 {
     ///                                                          ///
@@ -125,7 +125,7 @@ contract Manager is IManager, VersionedContract, UUPS, Ownable, ManagerStorageV1
             auction: auction,
             initialOwner: founder
         });
-        IBaseMetadata(metadata).initialize({ initStrings: _tokenParams.initStrings, token: token });
+        IBaseMetadata(metadata).initialize({ initStrings: _tokenParams.initStrings, token: token, governor: governor });
         IAuction(auction).initialize({
             token: token,
             founder: founder,
@@ -211,30 +211,31 @@ contract Manager is IManager, VersionedContract, UUPS, Ownable, ManagerStorageV1
         try IVersionedContract(target).contractVersion() returns (string memory version) {
             return version;
         } catch {
-            return '';
+            return "";
         }
     }
-    
 
     function getDAOVersions(address token) external view returns (DAOVersionInfo memory) {
         (address metadata, address auction, address treasury, address governor) = getAddresses(token);
-        return DAOVersionInfo({
-            token: _safeGetVersion(token),
-            metadata: _safeGetVersion(metadata),
-            auction: _safeGetVersion(auction),
-            treasury: _safeGetVersion(treasury),
-            governor: _safeGetVersion(governor)
-        });
+        return
+            DAOVersionInfo({
+                token: _safeGetVersion(token),
+                metadata: _safeGetVersion(metadata),
+                auction: _safeGetVersion(auction),
+                treasury: _safeGetVersion(treasury),
+                governor: _safeGetVersion(governor)
+            });
     }
 
     function getLatestVersions() external view returns (DAOVersionInfo memory) {
-        return DAOVersionInfo({
-            token: _safeGetVersion(tokenImpl),
-            metadata: _safeGetVersion(metadataImpl),
-            auction: _safeGetVersion(auctionImpl),
-            treasury: _safeGetVersion(treasuryImpl),
-            governor: _safeGetVersion(governorImpl)
-        });
+        return
+            DAOVersionInfo({
+                token: _safeGetVersion(tokenImpl),
+                metadata: _safeGetVersion(metadataImpl),
+                auction: _safeGetVersion(auctionImpl),
+                treasury: _safeGetVersion(treasuryImpl),
+                governor: _safeGetVersion(governorImpl)
+            });
     }
 
     ///                                                          ///

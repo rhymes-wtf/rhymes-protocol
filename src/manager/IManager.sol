@@ -57,7 +57,7 @@ interface IManager is IUUPS, IOwnable {
         string metadata;
         string auction;
         string treasury;
-        string governor; 
+        string governor;
     }
 
     /// @notice The ERC-721 token parameters

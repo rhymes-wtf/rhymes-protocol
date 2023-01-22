@@ -14,22 +14,25 @@ import { ERC721 } from "../../lib/token/ERC721.sol";
 
 import { MetadataRendererStorageV1 } from "./storage/MetadataRendererStorageV1.sol";
 import { MetadataRendererStorageV2 } from "./storage/MetadataRendererStorageV2.sol";
+import { MetadataRendererStorageV3 } from "./storage/MetadataRendererStorageV3.sol";
 import { IToken } from "../../token/IToken.sol";
 import { IPropertyIPFSMetadataRenderer } from "./interfaces/IPropertyIPFSMetadataRenderer.sol";
 import { IManager } from "../../manager/IManager.sol";
 import { VersionedContract } from "../../VersionedContract.sol";
+import "forge-std/console2.sol";
 
 /// @title Metadata Renderer
-/// @author Iain Nash & Rohan Kulkarni
+/// @author Iain Nash & Rohan Kulkarni & Aditya Veer Parmar
 /// @notice A DAO's artwork generator and renderer
-/// @custom:repo github.com/ourzora/nouns-protocol 
+/// @custom:repo github.com/ourzora/nouns-protocol
 contract MetadataRenderer is
     IPropertyIPFSMetadataRenderer,
     VersionedContract,
     Initializable,
     UUPS,
     MetadataRendererStorageV1,
-    MetadataRendererStorageV2
+    MetadataRendererStorageV2,
+    MetadataRendererStorageV3
 {
     ///                                                          ///
     ///                          IMMUTABLES                      ///
@@ -67,7 +70,11 @@ contract MetadataRenderer is
     /// @notice Initializes a DAO's token metadata renderer
     /// @param _initStrings The encoded token and metadata initialization strings
     /// @param _token The ERC-721 token address
-    function initialize(bytes calldata _initStrings, address _token) external initializer {
+    function initialize(
+        bytes calldata _initStrings,
+        address _token,
+        address _governor
+    ) external initializer {
         // Ensure the caller is the contract manager
         if (msg.sender != address(manager)) {
             revert ONLY_MANAGER();
@@ -86,6 +93,7 @@ contract MetadataRenderer is
         settings.rendererBase = _rendererBase;
         settings.projectURI = _projectURI;
         settings.token = _token;
+        settings.governor = _governor;
     }
 
     ///                                                          ///
@@ -243,6 +251,13 @@ contract MetadataRenderer is
         // Ensure the caller is the token contract
         if (msg.sender != settings.token) revert ONLY_TOKEN();
 
+        // check if release stack has a token and if its release timestamp is lesser than the current time
+        if (releaseStack.length > 0 && releaseStack[0].releaseTimestamp < block.timestamp) {
+            customTokens[_tokenId] = releaseStack[releaseStack.length - 1];
+            releaseStack.pop();
+            return true;
+        }
+
         // Compute some randomness for the token id
         uint256 seed = _generateSeed(_tokenId);
 
@@ -364,6 +379,36 @@ contract MetadataRenderer is
     /// @notice The token URI
     /// @param _tokenId The ERC-721 token id
     function tokenURI(uint256 _tokenId) external view returns (string memory) {
+        MetadataBuilder.JSONItem[] memory customItems = new MetadataBuilder.JSONItem[](7);
+        // check if _tokenId is a custom token
+        if (customTokens[_tokenId].releaseTimestamp > 0) {
+            customItems[0] = MetadataBuilder.JSONItem({ key: MetadataJSONKeys.keyName, value: customTokens[_tokenId].name, quote: true });
+            customItems[1] = MetadataBuilder.JSONItem({
+                key: MetadataJSONKeys.keyDescription,
+                value: customTokens[_tokenId].description,
+                quote: true
+            });
+            customItems[2] = MetadataBuilder.JSONItem({ key: MetadataJSONKeys.keyImage, value: customTokens[_tokenId].image, quote: true });
+            customItems[3] = MetadataBuilder.JSONItem({
+                key: MetadataJSONKeys.keyProperties,
+                value: customTokens[_tokenId].properties,
+                quote: false
+            });
+            customItems[4] = MetadataBuilder.JSONItem({
+                key: MetadataJSONKeys.keyAttributes,
+                value: customTokens[_tokenId].attributes,
+                quote: false
+            });
+            customItems[5] = MetadataBuilder.JSONItem({
+                key: MetadataJSONKeys.keyAnimationURL,
+                value: customTokens[_tokenId].attributes,
+                quote: false
+            });
+            customItems[6] = MetadataBuilder.JSONItem({ key: "external_url", value: customTokens[_tokenId].external_url, quote: true });
+
+            return MetadataBuilder.generateEncodedJSON(customItems);
+        }
+
         (string memory _attributes, string memory queryString) = getAttributes(_tokenId);
 
         MetadataBuilder.JSONItem[] memory items = new MetadataBuilder.JSONItem[](4 + additionalTokenProperties.length);
@@ -466,5 +511,18 @@ contract MetadataRenderer is
     /// @param _impl The address of the new implementation
     function _authorizeUpgrade(address _impl) internal view override onlyOwner {
         if (!manager.isRegisteredUpgrade(_getImplementation(), _impl)) revert INVALID_UPGRADE(_impl);
+    }
+
+    function addToReleaseStack(CustomToken calldata _token) external returns (bool) {
+        // Ensure the caller is the governance contract
+        if (msg.sender != settings.governor) revert NOT_AUTHORIZED();
+
+        // Add the token to the release stack
+        releaseStack.push(_token);
+
+        // Emit the event
+        emit TokenAddedToReleaseStack(_token);
+
+        return true;
     }
 }

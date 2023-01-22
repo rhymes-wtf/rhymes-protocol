@@ -13,7 +13,7 @@ contract MockERC721 is UUPS, ERC721 {
         _mint(_to, _tokenId);
     }
 
-    function _authorizeUpgrade(address) internal override virtual {
+    function _authorizeUpgrade(address) internal virtual override {
         // no-op
     }
 }

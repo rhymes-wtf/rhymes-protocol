@@ -49,7 +49,7 @@ abstract contract Ownable is IOwnable, Initializable {
     }
 
     /// @notice The address of the owner
-    function owner() public virtual view returns (address) {
+    function owner() public view virtual returns (address) {
         return _owner;
     }
 

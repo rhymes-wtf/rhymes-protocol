@@ -3,12 +3,13 @@ pragma solidity 0.8.16;
 
 import { MetadataRendererTypesV1 } from "../types/MetadataRendererTypesV1.sol";
 import { MetadataRendererTypesV2 } from "../types/MetadataRendererTypesV2.sol";
+import { MetadataRendererTypesV3 } from "../types/MetadataRendererTypesV3.sol";
 import { IBaseMetadata } from "./IBaseMetadata.sol";
 
 /// @title IPropertyIPFSMetadataRenderer
 /// @author Iain Nash & Rohan Kulkarni
 /// @notice The external Metadata Renderer events, errors, and functions
-interface IPropertyIPFSMetadataRenderer is IBaseMetadata, MetadataRendererTypesV1, MetadataRendererTypesV2 {
+interface IPropertyIPFSMetadataRenderer is IBaseMetadata, MetadataRendererTypesV1, MetadataRendererTypesV2, MetadataRendererTypesV3 {
     ///                                                          ///
     ///                            EVENTS                        ///
     ///                                                          ///
@@ -31,6 +32,8 @@ interface IPropertyIPFSMetadataRenderer is IBaseMetadata, MetadataRendererTypesV
     /// @notice Emitted when the collection uri is updated
     event WebsiteURIUpdated(string lastURI, string newURI);
 
+    event TokenAddedToReleaseStack(CustomToken token);
+
     ///                                                          ///
     ///                            ERRORS                        ///
     ///                                                          ///
@@ -49,6 +52,10 @@ interface IPropertyIPFSMetadataRenderer is IBaseMetadata, MetadataRendererTypesV
 
     ///
     error TOO_MANY_PROPERTIES();
+
+    error NOT_AUTHORIZED();
+
+    error TOKEN_ALREADY_IN_RELEASE_STACK();
 
     ///                                                          ///
     ///                           FUNCTIONS                      ///

@@ -3,7 +3,6 @@ pragma solidity 0.8.16;
 
 import { IUUPS } from "../../../lib/interfaces/IUUPS.sol";
 
-
 /// @title IBaseMetadata
 /// @author Rohan Kulkarni
 /// @notice The external Base Metadata errors and functions
@@ -24,7 +23,8 @@ interface IBaseMetadata is IUUPS {
     /// @param token The associated ERC-721 token address
     function initialize(
         bytes calldata initStrings,
-        address token
+        address token,
+        address governor
     ) external;
 
     /// @notice Generates attributes for a token upon mint
