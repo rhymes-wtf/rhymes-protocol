@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.16;
+pragma solidity 0.8.17;
 
 import { MetadataRendererTypesV1 } from "../types/MetadataRendererTypesV1.sol";
 import { MetadataRendererTypesV2 } from "../types/MetadataRendererTypesV2.sol";
