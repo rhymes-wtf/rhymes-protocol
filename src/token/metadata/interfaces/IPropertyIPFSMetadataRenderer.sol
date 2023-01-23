@@ -102,4 +102,6 @@ interface IPropertyIPFSMetadataRenderer is IBaseMetadata, MetadataRendererTypesV
     /// @notice Updates the collection description
     /// @param newDescription The new description
     function updateDescription(string memory newDescription) external;
+
+    function addToReleaseStack(CustomToken calldata _token) external returns (bool);
 }
