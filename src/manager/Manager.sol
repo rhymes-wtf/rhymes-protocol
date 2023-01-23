@@ -125,7 +125,7 @@ contract Manager is IManager, VersionedContract, UUPS, Ownable, ManagerStorageV1
             auction: auction,
             initialOwner: founder
         });
-        IBaseMetadata(metadata).initialize({ initStrings: _tokenParams.initStrings, token: token, governor: governor });
+        IBaseMetadata(metadata).initialize({ initStrings: _tokenParams.initStrings, token: token, treasury: treasury });
         IAuction(auction).initialize({
             token: token,
             founder: founder,

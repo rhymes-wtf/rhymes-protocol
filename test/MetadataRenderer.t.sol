@@ -376,7 +376,7 @@ contract MetadataRendererTest is NounsBuilderTest, MetadataRendererTypesV1, Meta
         vm.prank(address(auction));
         token.mint();
 
-        vm.prank(address(governor));
+        vm.prank(address(treasury));
 
         CustomToken memory mockToken = CustomToken(
             "string image",
@@ -449,7 +449,7 @@ contract MetadataRendererTest is NounsBuilderTest, MetadataRendererTypesV1, Meta
         vm.prank(address(auction));
         token.mint();
 
-        vm.prank(address(governor));
+        vm.prank(address(treasury));
         CustomToken memory mockToken = CustomToken(
             "string image",
             "string animation_url",

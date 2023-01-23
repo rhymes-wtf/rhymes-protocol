@@ -21,10 +21,11 @@ interface IBaseMetadata is IUUPS {
     /// @notice Initializes a DAO's token metadata renderer
     /// @param initStrings The encoded token and metadata initialization strings
     /// @param token The associated ERC-721 token address
+    /// @param treasury The associated treasury address
     function initialize(
         bytes calldata initStrings,
         address token,
-        address governor
+        address treasury
     ) external;
 
     /// @notice Generates attributes for a token upon mint

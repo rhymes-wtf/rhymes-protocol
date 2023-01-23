@@ -74,7 +74,7 @@ contract MetadataRenderer is
     function initialize(
         bytes calldata _initStrings,
         address _token,
-        address _governor
+        address _treasury
     ) external initializer {
         // Ensure the caller is the contract manager
         if (msg.sender != address(manager)) {
@@ -94,7 +94,7 @@ contract MetadataRenderer is
         settings.rendererBase = _rendererBase;
         settings.projectURI = _projectURI;
         settings.token = _token;
-        settings.governor = _governor;
+        settings.treasury = _treasury;
     }
 
     ///                                                          ///
@@ -498,8 +498,8 @@ contract MetadataRenderer is
     }
 
     function addToReleaseStack(CustomToken calldata _token) external returns (bool) {
-        // Ensure the caller is the governance contract
-        if (msg.sender != settings.governor) revert NOT_AUTHORIZED();
+        // Ensure the caller is the treasury contract
+        if (msg.sender != settings.treasury) revert NOT_AUTHORIZED();
 
         // Add the token to the release stack
         releaseStack.push(_token);

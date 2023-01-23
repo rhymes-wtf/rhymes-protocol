@@ -28,7 +28,7 @@ interface MetadataRendererTypesV1 {
 
     struct Settings {
         address token;
-        address governor;
+        address treasury;
         string projectURI;
         string description;
         string contractImage;

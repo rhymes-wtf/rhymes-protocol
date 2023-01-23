@@ -19,13 +19,13 @@ interface IAuction is IUUPS, IOwnable, IPausable {
     /// @param amount The amount of ETH
     /// @param extended If the bid extended the auction
     /// @param endTime The end time of the auction
-    event AuctionBid(uint256 tokenId, address bidder, uint256 amount, bool extended, uint256 endTime);
+    event AuctionBid(uint256 indexed tokenId, address indexed bidder, uint256 amount, bool extended, uint256 endTime);
 
     /// @notice Emitted when an auction is settled
     /// @param tokenId The ERC-721 token id of the settled auction
     /// @param winner The address of the winning bidder
     /// @param amount The amount of ETH raised from the winning bid
-    event AuctionSettled(uint256 tokenId, address winner, uint256 amount);
+    event AuctionSettled(uint256 indexed tokenId, address winner, uint256 amount);
 
     /// @notice Emitted when an auction is created
     /// @param tokenId The ERC-721 token id of the created auction
