@@ -35,7 +35,7 @@ contract DeployContracts is Script {
         console2.log(owner);
         console2.log("");
 
-        vm.startBroadcast(deployerAddress);
+        vm.startBroadcast(key);
 
         // Deploy root manager implementation + proxy
         address managerImpl0 = address(new Manager(address(0), address(0), address(0), address(0), address(0)));
@@ -60,7 +60,7 @@ contract DeployContracts is Script {
         address managerImpl = address(new Manager(tokenImpl, metadataRendererImpl, auctionImpl, treasuryImpl, governorImpl));
 
         // vm.prank(owner);
-        // manager.upgradeTo(managerImpl);
+        manager.upgradeTo(managerImpl);
 
         vm.stopBroadcast();
 

@@ -204,7 +204,7 @@ contract MetadataRendererTest is NounsBuilderTest, MetadataRendererTypesV1, Meta
             {
                 "name": "Mock Token #0",
                 "description": "This is a mock token",
-                "image": "http://localhost:5000/render?contractAddress=0xcfa47f35f4974a4c44747e7900aa52f74f0ff5c0&tokenId=0&images=https%3a%2f%2fnouns.build%2fapi%2ftest%2fmock-property%2fmock-item.json",
+                "image": "http://localhost:5000/render?contractAddress=0x3c9d4dcc85e6b58559ccfedce34f7b31b4a70cf6&tokenId=0&images=https%3a%2f%2fnouns.build%2fapi%2ftest%2fmock-property%2fmock-item.json",
                 "properties": {
                     "mock-property": "mock-item"
                 },
@@ -218,7 +218,7 @@ contract MetadataRendererTest is NounsBuilderTest, MetadataRendererTypesV1, Meta
 
         assertEq(
             json,
-            '{"name": "Mock Token #0","description": "This is a mock token","image": "http://localhost:5000/render?contractAddress=0xcfa47f35f4974a4c44747e7900aa52f74f0ff5c0&tokenId=0&images=https%3a%2f%2fnouns.build%2fapi%2ftest%2fmock-property%2fmock-item.json","properties": {"mock-property": "mock-item"},"testing": "HELLO","participationAgreement": "This is a JSON quoted participation agreement."}'
+            '{"name": "Mock Token #0","description": "This is a mock token","image": "http://localhost:5000/render?contractAddress=0x3c9d4dcc85e6b58559ccfedce34f7b31b4a70cf6&tokenId=0&images=https%3a%2f%2fnouns.build%2fapi%2ftest%2fmock-property%2fmock-item.json","properties": {"mock-property": "mock-item"},"testing": "HELLO","participationAgreement": "This is a JSON quoted participation agreement."}'
         );
     }
 
@@ -260,7 +260,7 @@ contract MetadataRendererTest is NounsBuilderTest, MetadataRendererTypesV1, Meta
         // Ensure no additional properties are sent
         assertEq(
             json,
-            '{"name": "Mock Token #0","description": "This is a mock token","image": "http://localhost:5000/render?contractAddress=0xcfa47f35f4974a4c44747e7900aa52f74f0ff5c0&tokenId=0&images=https%3a%2f%2fnouns.build%2fapi%2ftest%2fmock-property%2fmock-item.json","properties": {"mock-property": "mock-item"}}'
+            '{"name": "Mock Token #0","description": "This is a mock token","image": "http://localhost:5000/render?contractAddress=0x3c9d4dcc85e6b58559ccfedce34f7b31b4a70cf6&tokenId=0&images=https%3a%2f%2fnouns.build%2fapi%2ftest%2fmock-property%2fmock-item.json","properties": {"mock-property": "mock-item"}}'
         );
 
         assertTrue(keccak256(bytes(withAdditionalTokenProperties)) != keccak256(bytes(token.tokenURI(0))));
@@ -316,7 +316,7 @@ contract MetadataRendererTest is NounsBuilderTest, MetadataRendererTypesV1, Meta
 
         assertEq(
             json,
-            unicode'{"name": "Mock Token #0","description": "This is a mock token","image": "http://localhost:5000/render?contractAddress=0xcfa47f35f4974a4c44747e7900aa52f74f0ff5c0&tokenId=0&images=https%3a%2f%2fnouns.build%2fapi%2ftest%2fmock-%e2%8c%90%20%e2%97%a8-%e2%97%a8-.%e2%88%86property%2f%20%e2%8c%90%e2%97%a8-%e2%97%a8%20.json","properties": {"mock-⌐ ◨-◨-.∆property": " ⌐◨-◨ "}}'
+            unicode'{"name": "Mock Token #0","description": "This is a mock token","image": "http://localhost:5000/render?contractAddress=0x3c9d4dcc85e6b58559ccfedce34f7b31b4a70cf6&tokenId=0&images=https%3a%2f%2fnouns.build%2fapi%2ftest%2fmock-%e2%8c%90%20%e2%97%a8-%e2%97%a8-.%e2%88%86property%2f%20%e2%8c%90%e2%97%a8-%e2%97%a8%20.json","properties": {"mock-⌐ ◨-◨-.∆property": " ⌐◨-◨ "}}'
         );
 
         assertTrue(keccak256(bytes(withAdditionalTokenProperties)) != keccak256(bytes(token.tokenURI(0))));
@@ -355,7 +355,7 @@ contract MetadataRendererTest is NounsBuilderTest, MetadataRendererTypesV1, Meta
 
         assertEq(
             json,
-            '{"name": "Mock Token #0","description": "This is a mock token","image": "http://localhost:5000/render?contractAddress=0xcfa47f35f4974a4c44747e7900aa52f74f0ff5c0&tokenId=0&images=https%3a%2f%2fnouns.build%2fapi%2ftest%2fmock-property%2fmock-item.json","properties": {"mock-property": "mock-item"}}'
+            '{"name": "Mock Token #0","description": "This is a mock token","image": "http://localhost:5000/render?contractAddress=0x3c9d4dcc85e6b58559ccfedce34f7b31b4a70cf6&tokenId=0&images=https%3a%2f%2fnouns.build%2fapi%2ftest%2fmock-property%2fmock-item.json","properties": {"mock-property": "mock-item"}}'
         );
     }
 
@@ -418,7 +418,7 @@ contract MetadataRendererTest is NounsBuilderTest, MetadataRendererTypesV1, Meta
 
         assertEq(
             json,
-            '{"name": "string name","description": "string description","image": "string image","properties": string properties,"attributes": string attributes,"animation_url": string attributes,"external_url": "string external_url"}'
+            '{"name": "Mock Token #3","description": "string description","image": "string image","properties": "string properties","attributes": "string attributes","animation_url": "string animation_url","external_url": "string external_url"}'
         );
 
         vm.prank(address(auction));
@@ -428,7 +428,7 @@ contract MetadataRendererTest is NounsBuilderTest, MetadataRendererTypesV1, Meta
 
         assertEq(
             json,
-            '{"name": "Mock Token #4","description": "This is a mock token","image": "http://localhost:5000/render?contractAddress=0xcfa47f35f4974a4c44747e7900aa52f74f0ff5c0&tokenId=4&images=https%3a%2f%2fnouns.build%2fapi%2ftest%2fmock-property%2fmock-item.json","properties": {"mock-property": "mock-item"}}'
+            '{"name": "Mock Token #4","description": "This is a mock token","image": "http://localhost:5000/render?contractAddress=0x3c9d4dcc85e6b58559ccfedce34f7b31b4a70cf6&tokenId=4&images=https%3a%2f%2fnouns.build%2fapi%2ftest%2fmock-property%2fmock-item.json","properties": {"mock-property": "mock-item"}}'
         );
     }
 
@@ -489,7 +489,7 @@ contract MetadataRendererTest is NounsBuilderTest, MetadataRendererTypesV1, Meta
 
         assertEq(
             json,
-            '{"name": "Mock Token #3","description": "This is a mock token","image": "http://localhost:5000/render?contractAddress=0xcfa47f35f4974a4c44747e7900aa52f74f0ff5c0&tokenId=3&images=https%3a%2f%2fnouns.build%2fapi%2ftest%2fmock-property%2fmock-item.json","properties": {"mock-property": "mock-item"}}'
+            '{"name": "Mock Token #3","description": "This is a mock token","image": "http://localhost:5000/render?contractAddress=0x3c9d4dcc85e6b58559ccfedce34f7b31b4a70cf6&tokenId=3&images=https%3a%2f%2fnouns.build%2fapi%2ftest%2fmock-property%2fmock-item.json","properties": {"mock-property": "mock-item"}}'
         );
         skip(3600);
         vm.prank(address(auction));
@@ -499,7 +499,7 @@ contract MetadataRendererTest is NounsBuilderTest, MetadataRendererTypesV1, Meta
 
         assertEq(
             json,
-            '{"name": "Mock Token #4","description": "This is a mock token","image": "http://localhost:5000/render?contractAddress=0xcfa47f35f4974a4c44747e7900aa52f74f0ff5c0&tokenId=4&images=https%3a%2f%2fnouns.build%2fapi%2ftest%2fmock-property%2fmock-item.json","properties": {"mock-property": "mock-item"}}'
+            '{"name": "Mock Token #4","description": "This is a mock token","image": "http://localhost:5000/render?contractAddress=0x3c9d4dcc85e6b58559ccfedce34f7b31b4a70cf6&tokenId=4&images=https%3a%2f%2fnouns.build%2fapi%2ftest%2fmock-property%2fmock-item.json","properties": {"mock-property": "mock-item"}}'
         );
 
         skip(3600);
@@ -510,7 +510,7 @@ contract MetadataRendererTest is NounsBuilderTest, MetadataRendererTypesV1, Meta
 
         assertEq(
             json,
-            '{"name": "string name","description": "string description","image": "string image","properties": string properties,"attributes": string attributes,"animation_url": string attributes,"external_url": "string external_url"}'
+            '{"name": "Mock Token #5","description": "string description","image": "string image","properties": "string properties","attributes": "string attributes","animation_url": "string animation_url","external_url": "string external_url"}'
         );
     }
 }

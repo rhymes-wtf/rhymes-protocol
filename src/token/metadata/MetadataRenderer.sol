@@ -15,6 +15,7 @@ import { ERC721 } from "../../lib/token/ERC721.sol";
 import { MetadataRendererStorageV1 } from "./storage/MetadataRendererStorageV1.sol";
 import { MetadataRendererStorageV2 } from "./storage/MetadataRendererStorageV2.sol";
 import { MetadataRendererStorageV3 } from "./storage/MetadataRendererStorageV3.sol";
+import { MetadataRendererLibV1 } from "./lib/MetadataRendererLibV1.sol";
 import { IToken } from "../../token/IToken.sol";
 import { IPropertyIPFSMetadataRenderer } from "./interfaces/IPropertyIPFSMetadataRenderer.sol";
 import { IManager } from "../../manager/IManager.sol";
@@ -379,40 +380,23 @@ contract MetadataRenderer is
     /// @notice The token URI
     /// @param _tokenId The ERC-721 token id
     function tokenURI(uint256 _tokenId) external view returns (string memory) {
-        MetadataBuilder.JSONItem[] memory customItems = new MetadataBuilder.JSONItem[](7);
         // check if _tokenId is a custom token
         if (customTokens[_tokenId].releaseTimestamp > 0) {
-            customItems[0] = MetadataBuilder.JSONItem({ key: MetadataJSONKeys.keyName, value: customTokens[_tokenId].name, quote: true });
-            customItems[1] = MetadataBuilder.JSONItem({
-                key: MetadataJSONKeys.keyDescription,
-                value: customTokens[_tokenId].description,
-                quote: true
-            });
-            customItems[2] = MetadataBuilder.JSONItem({ key: MetadataJSONKeys.keyImage, value: customTokens[_tokenId].image, quote: true });
-            customItems[3] = MetadataBuilder.JSONItem({
-                key: MetadataJSONKeys.keyProperties,
-                value: customTokens[_tokenId].properties,
-                quote: false
-            });
-            customItems[4] = MetadataBuilder.JSONItem({
-                key: MetadataJSONKeys.keyAttributes,
-                value: customTokens[_tokenId].attributes,
-                quote: false
-            });
-            customItems[5] = MetadataBuilder.JSONItem({
-                key: MetadataJSONKeys.keyAnimationURL,
-                value: customTokens[_tokenId].attributes,
-                quote: false
-            });
-            customItems[6] = MetadataBuilder.JSONItem({ key: "external_url", value: customTokens[_tokenId].external_url, quote: true });
-
-            return MetadataBuilder.generateEncodedJSON(customItems);
+            return
+                MetadataRendererLibV1.getCustomTokenURI(
+                    string.concat(_name(), " #", Strings.toString(_tokenId)),
+                    customTokens[_tokenId].description,
+                    customTokens[_tokenId].image,
+                    customTokens[_tokenId].attributes,
+                    customTokens[_tokenId].properties,
+                    customTokens[_tokenId].animation_url,
+                    customTokens[_tokenId].external_url
+                );
         }
 
         (string memory _attributes, string memory queryString) = getAttributes(_tokenId);
 
         MetadataBuilder.JSONItem[] memory items = new MetadataBuilder.JSONItem[](4 + additionalTokenProperties.length);
-
         items[0] = MetadataBuilder.JSONItem({
             key: MetadataJSONKeys.keyName,
             value: string.concat(_name(), " #", Strings.toString(_tokenId)),
