@@ -294,14 +294,24 @@ contract MetadataRenderer is
 
     /// @notice The properties and query string for a generated token
     /// @param _tokenId The ERC-721 token id
-    function getAttributes(uint256 _tokenId) public view returns (string memory resultAttributes, string memory queryString) {
+    function getAttributes(uint256 _tokenId)
+        public
+        view
+        returns (
+            string memory resultAttributes,
+            string memory imageQueryString,
+            string memory audioQueryString
+        )
+    {
         // Get the token's query string
-        queryString = string.concat(
+        imageQueryString = string.concat(
             "?contractAddress=",
             Strings.toHexString(uint256(uint160(address(this))), 20),
             "&tokenId=",
             Strings.toString(_tokenId)
         );
+
+        audioQueryString = imageQueryString;
 
         // Get the token's generated attributes
         uint16[16] memory tokenAttributes = attributes[_tokenId];
@@ -334,7 +344,16 @@ contract MetadataRenderer is
                 itemJSON.value = item.name;
                 itemJSON.quote = true;
 
-                queryString = string.concat(queryString, "&images=", _getItemImage(item, property.name));
+                imageQueryString = string.concat(
+                    imageQueryString,
+                    "&images=",
+                    _getItemImage(item, property.name, ipfsData[item.referenceSlot].artExtension)
+                );
+                audioQueryString = string.concat(
+                    audioQueryString,
+                    "&audios=",
+                    _getItemImage(item, property.name, ipfsData[item.referenceSlot].audioExtension)
+                );
             }
 
             resultAttributes = MetadataBuilder.generateJSON(arrayAttributesItems);
@@ -347,13 +366,12 @@ contract MetadataRenderer is
     }
 
     /// @dev Encodes the reference URI of an item
-    function _getItemImage(Item memory _item, string memory _propertyName) private view returns (string memory) {
-        return
-            UriEncode.uriEncode(
-                string(
-                    abi.encodePacked(ipfsData[_item.referenceSlot].baseUri, _propertyName, "/", _item.name, ipfsData[_item.referenceSlot].extension)
-                )
-            );
+    function _getItemImage(
+        Item memory _item,
+        string memory _propertyName,
+        string memory extension
+    ) private view returns (string memory) {
+        return UriEncode.uriEncode(string(abi.encodePacked(ipfsData[_item.referenceSlot].baseUri, _propertyName, "/", _item.name, extension)));
     }
 
     ///                                                          ///
@@ -394,9 +412,9 @@ contract MetadataRenderer is
                 );
         }
 
-        (string memory _attributes, string memory queryString) = getAttributes(_tokenId);
+        (string memory _attributes, string memory imageQueryString, string memory audioQueryString) = getAttributes(_tokenId);
 
-        MetadataBuilder.JSONItem[] memory items = new MetadataBuilder.JSONItem[](4 + additionalTokenProperties.length);
+        MetadataBuilder.JSONItem[] memory items = new MetadataBuilder.JSONItem[](5 + additionalTokenProperties.length);
         items[0] = MetadataBuilder.JSONItem({
             key: MetadataJSONKeys.keyName,
             value: string.concat(_name(), " #", Strings.toString(_tokenId)),
@@ -405,14 +423,19 @@ contract MetadataRenderer is
         items[1] = MetadataBuilder.JSONItem({ key: MetadataJSONKeys.keyDescription, value: settings.description, quote: true });
         items[2] = MetadataBuilder.JSONItem({
             key: MetadataJSONKeys.keyImage,
-            value: string.concat(settings.rendererBase, queryString),
+            value: string.concat(settings.rendererBase, imageQueryString),
             quote: true
         });
-        items[3] = MetadataBuilder.JSONItem({ key: MetadataJSONKeys.keyProperties, value: _attributes, quote: false });
+        items[3] = MetadataBuilder.JSONItem({
+            key: MetadataJSONKeys.keyAnimationURL,
+            value: string.concat(settings.rendererBase, audioQueryString),
+            quote: true
+        });
+        items[4] = MetadataBuilder.JSONItem({ key: MetadataJSONKeys.keyProperties, value: _attributes, quote: false });
 
         for (uint256 i = 0; i < additionalTokenProperties.length; i++) {
             AdditionalTokenProperty memory tokenProperties = additionalTokenProperties[i];
-            items[4 + i] = MetadataBuilder.JSONItem({ key: tokenProperties.key, value: tokenProperties.value, quote: tokenProperties.quote });
+            items[5 + i] = MetadataBuilder.JSONItem({ key: tokenProperties.key, value: tokenProperties.value, quote: tokenProperties.quote });
         }
 
         return MetadataBuilder.generateEncodedJSON(items);

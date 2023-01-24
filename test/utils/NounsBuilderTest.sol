@@ -180,7 +180,11 @@ contract NounsBuilderTest is Test {
         items[0] = MetadataRendererTypesV1.ItemParam({ propertyId: 0, name: "failure1", isNewProperty: true });
         items[1] = MetadataRendererTypesV1.ItemParam({ propertyId: 0, name: "failure2", isNewProperty: true });
 
-        MetadataRendererTypesV1.IPFSGroup memory ipfsGroup = MetadataRendererTypesV1.IPFSGroup({ baseUri: "BASE_URI", extension: "EXTENSION" });
+        MetadataRendererTypesV1.IPFSGroup memory ipfsGroup = MetadataRendererTypesV1.IPFSGroup({
+            baseUri: "BASE_URI",
+            artExtension: "EXTENSION",
+            audioExtension: "AUDIO_EXTENSION"
+        });
 
         vm.prank(metadataRenderer.owner());
         metadataRenderer.addProperties(names, items, ipfsGroup);

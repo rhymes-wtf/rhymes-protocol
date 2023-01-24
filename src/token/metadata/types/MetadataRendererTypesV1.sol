@@ -13,7 +13,8 @@ interface MetadataRendererTypesV1 {
 
     struct IPFSGroup {
         string baseUri;
-        string extension;
+        string artExtension;
+        string audioExtension;
     }
 
     struct Item {
