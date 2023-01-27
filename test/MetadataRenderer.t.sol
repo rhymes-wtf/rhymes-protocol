@@ -31,7 +31,7 @@ contract MetadataRendererTest is NounsBuilderTest, MetadataRendererTypesV1, Meta
 
         // Attempt to mint token #0
         vm.prank(address(token));
-        bool response = metadataRenderer.onMinted(0);
+        bool response = metadataRenderer.onMinted(0, false);
 
         assertFalse(response);
     }
@@ -50,7 +50,7 @@ contract MetadataRendererTest is NounsBuilderTest, MetadataRendererTypesV1, Meta
         metadataRenderer.addProperties(names, items, ipfsGroup);
 
         vm.prank(address(token));
-        bool response = metadataRenderer.onMinted(0);
+        bool response = metadataRenderer.onMinted(0, false);
         assertFalse(response);
     }
 
@@ -70,7 +70,7 @@ contract MetadataRendererTest is NounsBuilderTest, MetadataRendererTypesV1, Meta
 
         // 0th token minted
         vm.prank(address(token));
-        bool response = metadataRenderer.onMinted(0);
+        bool response = metadataRenderer.onMinted(0, false);
         assertFalse(response);
     }
 
@@ -88,7 +88,7 @@ contract MetadataRendererTest is NounsBuilderTest, MetadataRendererTypesV1, Meta
         metadataRenderer.addProperties(names, items, ipfsGroup);
 
         vm.prank(address(token));
-        bool response = metadataRenderer.onMinted(0);
+        bool response = metadataRenderer.onMinted(0, false);
         assertTrue(response);
     }
 
@@ -126,7 +126,7 @@ contract MetadataRendererTest is NounsBuilderTest, MetadataRendererTypesV1, Meta
         metadataRenderer.addProperties(names, items, ipfsGroup);
 
         vm.prank(address(token));
-        bool response = metadataRenderer.onMinted(0);
+        bool response = metadataRenderer.onMinted(0, false);
         assertTrue(response);
 
         names = new string[](1);
@@ -142,7 +142,7 @@ contract MetadataRendererTest is NounsBuilderTest, MetadataRendererTypesV1, Meta
         metadataRenderer.deleteAndRecreateProperties(names, items, ipfsGroup);
 
         vm.prank(address(token));
-        response = metadataRenderer.onMinted(0);
+        response = metadataRenderer.onMinted(0, false);
         assertTrue(response);
     }
 
@@ -386,7 +386,9 @@ contract MetadataRendererTest is NounsBuilderTest, MetadataRendererTypesV1, Meta
             "string name",
             "string attributes",
             "string properties",
-            block.timestamp
+            block.timestamp,
+            0,
+            address(0)
         );
         metadataRenderer.addToReleaseStack(mockToken);
 
@@ -398,7 +400,9 @@ contract MetadataRendererTest is NounsBuilderTest, MetadataRendererTypesV1, Meta
             string memory name,
             string memory attributes,
             string memory properties,
-            uint256 timestamp
+            uint256 timestamp,
+            uint256 royalty,
+            address royaltyRecipient
         ) = metadataRenderer.releaseStack(0);
 
         assertEq(image, "string image");
@@ -458,7 +462,9 @@ contract MetadataRendererTest is NounsBuilderTest, MetadataRendererTypesV1, Meta
             "string name",
             "string attributes",
             "string properties",
-            7200
+            7200,
+            0,
+            address(0)
         );
         metadataRenderer.addToReleaseStack(mockToken);
 
@@ -470,7 +476,9 @@ contract MetadataRendererTest is NounsBuilderTest, MetadataRendererTypesV1, Meta
             string memory name,
             string memory attributes,
             string memory properties,
-            uint256 timestamp
+            uint256 timestamp,
+            uint256 royalty,
+            address royaltyRecipient
         ) = metadataRenderer.releaseStack(0);
 
         assertEq(image, "string image");

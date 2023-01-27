@@ -14,5 +14,7 @@ interface MetadataRendererTypesV3 {
         string attributes;
         string properties;
         uint256 releaseTimestamp;
+        uint256 royaltyBps;
+        address royaltyRecipient;
     }
 }

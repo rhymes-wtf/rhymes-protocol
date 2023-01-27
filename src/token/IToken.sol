@@ -129,4 +129,6 @@ interface IToken is IUUPS, IERC721Votes, TokenTypesV1, TokenTypesV2 {
 
     /// @notice Callback called by auction on first auction started to transfer ownership to treasury from founder
     function onFirstAuctionStarted() external;
+
+    function getRoyalty(uint256 _tokenId) external view returns (address, uint256);
 }

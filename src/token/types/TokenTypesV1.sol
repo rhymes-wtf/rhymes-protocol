@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.17;
-
-import { IBaseMetadata } from "../metadata/interfaces/IBaseMetadata.sol";
+import { IPropertyIPFSMetadataRenderer } from "../metadata/interfaces/IPropertyIPFSMetadataRenderer.sol";
 
 /// @title TokenTypesV1
 /// @author Rohan Kulkarni
@@ -18,7 +17,7 @@ interface TokenTypesV1 {
         address auction;
         uint88 totalSupply;
         uint8 numFounders;
-        IBaseMetadata metadataRenderer;
+        IPropertyIPFSMetadataRenderer metadataRenderer;
         uint88 mintCount;
         uint8 totalOwnership;
     }

@@ -8,7 +8,7 @@ import { ERC721 } from "../lib/token/ERC721.sol";
 import { Ownable } from "../lib/utils/Ownable.sol";
 import { TokenStorageV1 } from "./storage/TokenStorageV1.sol";
 import { TokenStorageV2 } from "./storage/TokenStorageV2.sol";
-import { IBaseMetadata } from "./metadata/interfaces/IBaseMetadata.sol";
+import { IPropertyIPFSMetadataRenderer } from "./metadata/interfaces/IPropertyIPFSMetadataRenderer.sol";
 import { IManager } from "../manager/IManager.sol";
 import { IAuction } from "../auction/IAuction.sol";
 import { IToken } from "./IToken.sol";
@@ -86,7 +86,7 @@ contract Token is IToken, VersionedContract, UUPS, Ownable, ReentrancyGuard, ERC
         __ERC721_init(_name, _symbol);
 
         // Store the metadata renderer and auction house
-        settings.metadataRenderer = IBaseMetadata(_metadataRenderer);
+        settings.metadataRenderer = IPropertyIPFSMetadataRenderer(_metadataRenderer);
         settings.auction = _auction;
     }
 
@@ -207,6 +207,7 @@ contract Token is IToken, VersionedContract, UUPS, Ownable, ReentrancyGuard, ERC
 
         // Mint the next available token to the recipient for bidding
         _mint(recipient, tokenId);
+        if (!settings.metadataRenderer.onMinted(tokenId, false)) revert NO_METADATA_GENERATED();
     }
 
     /// @dev Overrides _mint to include attribute generation
@@ -220,9 +221,6 @@ contract Token is IToken, VersionedContract, UUPS, Ownable, ReentrancyGuard, ERC
         unchecked {
             ++settings.totalSupply;
         }
-
-        // Generate the token attributes
-        if (!settings.metadataRenderer.onMinted(_tokenId)) revert NO_METADATA_GENERATED();
     }
 
     /// @dev Checks if a given token is for a founder and mints accordingly
@@ -239,7 +237,8 @@ contract Token is IToken, VersionedContract, UUPS, Ownable, ReentrancyGuard, ERC
         } else if (block.timestamp < tokenRecipient[baseTokenId].vestExpiry) {
             // Mint the token to the founder
             _mint(tokenRecipient[baseTokenId].wallet, _tokenId);
-
+            // Generate the token attributes
+            if (!settings.metadataRenderer.onMinted(_tokenId, true)) revert NO_METADATA_GENERATED();
             return true;
 
             // Else the founder has finished vesting:
@@ -450,5 +449,9 @@ contract Token is IToken, VersionedContract, UUPS, Ownable, ReentrancyGuard, ERC
 
         // Ensure the implementation is valid
         if (!manager.isRegisteredUpgrade(_getImplementation(), _newImpl)) revert INVALID_UPGRADE(_newImpl);
+    }
+
+    function getRoyalty(uint256 _tokenId) external view returns (address, uint256) {
+        return settings.metadataRenderer.getRoyalty(_tokenId);
     }
 }

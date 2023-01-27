@@ -6,18 +6,21 @@ import { MockERC721 } from "./utils/mocks/MockERC721.sol";
 import { MockImpl } from "./utils/mocks/MockImpl.sol";
 import { MockPartialTokenImpl } from "./utils/mocks/MockPartialTokenImpl.sol";
 import { IAuction } from "../src/auction/IAuction.sol";
+import { MetadataRendererTypesV3 } from "../src/token/metadata/types/MetadataRendererTypesV3.sol";
 
-contract AuctionTest is NounsBuilderTest {
+contract AuctionTest is NounsBuilderTest, MetadataRendererTypesV3 {
     MockImpl internal mockImpl;
 
     address internal bidder1;
     address internal bidder2;
+    address internal creator;
 
     function setUp() public virtual override {
         super.setUp();
 
         bidder1 = vm.addr(0xB1);
         bidder2 = vm.addr(0xB2);
+        creator = vm.addr(0xC1);
 
         vm.deal(bidder1, 100 ether);
         vm.deal(bidder2, 100 ether);
@@ -292,14 +295,43 @@ contract AuctionTest is NounsBuilderTest {
         vm.prank(bidder2);
         auction.createBid{ value: 1 ether }(2);
 
+        vm.prank(address(treasury));
+        CustomToken memory mockToken = CustomToken(
+            "string image",
+            "string animation_url",
+            "string external_url",
+            "string description",
+            "string name",
+            "string attributes",
+            "string properties",
+            1,
+            5000,
+            address(creator)
+        );
+        metadataRenderer.addToReleaseStack(mockToken);
+
         vm.warp(10 minutes + 1 seconds);
 
         auction.settleCurrentAndCreateNewAuction();
 
         assertEq(token.ownerOf(2), bidder2);
         assertEq(token.getVotes(bidder2), 1);
-
         assertEq(address(treasury).balance, 1 ether);
+
+        vm.prank(bidder1);
+        auction.createBid{ value: 0.420 ether }(3);
+
+        vm.prank(bidder2);
+        auction.createBid{ value: 10 ether }(3);
+
+        vm.warp(21 minutes + 1 seconds);
+
+        auction.settleCurrentAndCreateNewAuction();
+
+        assertEq(token.ownerOf(3), bidder2);
+        assertEq(token.getVotes(bidder2), 2);
+        assertEq(address(treasury).balance, 6 ether);
+        assertEq(address(creator).balance, 5 ether);
     }
 
     function test_PausesWhenMintFails() public {

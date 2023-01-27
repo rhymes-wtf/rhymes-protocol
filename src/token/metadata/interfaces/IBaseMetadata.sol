@@ -30,7 +30,7 @@ interface IBaseMetadata is IUUPS {
 
     /// @notice Generates attributes for a token upon mint
     /// @param tokenId The ERC-721 token id
-    function onMinted(uint256 tokenId) external returns (bool);
+    function onMinted(uint256 tokenId, bool founderVested) external returns (bool);
 
     /// @notice The token URI
     /// @param tokenId The ERC-721 token id

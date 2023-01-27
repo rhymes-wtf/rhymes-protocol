@@ -100,15 +100,17 @@ interface IPropertyIPFSMetadataRenderer is IBaseMetadata, MetadataRendererTypesV
 
     /// @notice Updates the contract image
     /// @param newContractImage The new contract image
-    function updateContractImage(string memory newContractImage) external;
+    // function updateContractImage(string memory newContractImage) external;
 
     /// @notice Updates the renderer base
     /// @param newRendererBase The new renderer base
-    function updateRendererBase(string memory newRendererBase) external;
+    // function updateRendererBase(string memory newRendererBase) external;
 
     /// @notice Updates the collection description
     /// @param newDescription The new description
     function updateDescription(string memory newDescription) external;
 
     function addToReleaseStack(CustomToken calldata _token) external returns (bool);
+
+    function getRoyalty(uint256 _tokenId) external view returns (address, uint256);
 }

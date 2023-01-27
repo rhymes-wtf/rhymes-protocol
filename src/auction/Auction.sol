@@ -203,6 +203,14 @@ contract Auction is IAuction, VersionedContract, UUPS, Ownable, ReentrancyGuard,
             // Cache the amount of the highest bid
             uint256 highestBid = _auction.highestBid;
 
+            (address recipient, uint256 royaltyBps) = token.getRoyalty(_auction.tokenId);
+
+            if (royaltyBps > 0) {
+                uint256 royaltyAmount = (highestBid * royaltyBps) / 10000;
+                _handleOutgoingTransfer(recipient, royaltyAmount);
+                highestBid -= royaltyAmount;
+            }
+
             // If the highest bid included ETH: Transfer it to the DAO treasury
             if (highestBid != 0) _handleOutgoingTransfer(settings.treasury, highestBid);
 

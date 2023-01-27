@@ -248,12 +248,12 @@ contract MetadataRenderer is
 
     /// @notice Generates attributes for a token upon mint
     /// @param _tokenId The ERC-721 token id
-    function onMinted(uint256 _tokenId) external override returns (bool) {
+    function onMinted(uint256 _tokenId, bool founderVested) external override returns (bool) {
         // Ensure the caller is the token contract
         if (msg.sender != settings.token) revert ONLY_TOKEN();
 
         // check if release stack has a token and if its release timestamp is lesser than the current time
-        if (releaseStack.length > 0 && releaseStack[0].releaseTimestamp < block.timestamp) {
+        if (!founderVested && releaseStack.length > 0 && releaseStack[0].releaseTimestamp < block.timestamp) {
             customTokens[_tokenId] = releaseStack[releaseStack.length - 1];
             releaseStack.pop();
             return true;
@@ -481,19 +481,19 @@ contract MetadataRenderer is
 
     /// @notice Updates the contract image
     /// @param _newContractImage The new contract image
-    function updateContractImage(string memory _newContractImage) external onlyOwner {
-        emit ContractImageUpdated(settings.contractImage, _newContractImage);
+    // function updateContractImage(string memory _newContractImage) external onlyOwner {
+    //     emit ContractImageUpdated(settings.contractImage, _newContractImage);
 
-        settings.contractImage = _newContractImage;
-    }
+    //     settings.contractImage = _newContractImage;
+    // }
 
     /// @notice Updates the renderer base
     /// @param _newRendererBase The new renderer base
-    function updateRendererBase(string memory _newRendererBase) external onlyOwner {
-        emit RendererBaseUpdated(settings.rendererBase, _newRendererBase);
+    // function updateRendererBase(string memory _newRendererBase) external onlyOwner {
+    //     emit RendererBaseUpdated(settings.rendererBase, _newRendererBase);
 
-        settings.rendererBase = _newRendererBase;
-    }
+    //     settings.rendererBase = _newRendererBase;
+    // }
 
     /// @notice Updates the collection description
     /// @param _newDescription The new description
@@ -531,5 +531,14 @@ contract MetadataRenderer is
         emit TokenAddedToReleaseStack(_token);
 
         return true;
+    }
+
+    function getRoyalty(uint256 _tokenId) external view returns (address, uint256) {
+        // check if _tokenId is a custom token
+        if (customTokens[_tokenId].releaseTimestamp > 0) {
+            return (customTokens[_tokenId].royaltyRecipient, customTokens[_tokenId].royaltyBps);
+        }
+
+        return (address(0), 0);
     }
 }
